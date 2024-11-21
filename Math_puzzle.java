@@ -34,31 +34,36 @@ public class Math_puzzle {
         Collections.shuffle(numbersList);
     }
 
+    // Input이 주어진 조건에 맞는 형식인지 확인하는 함수
     static void checkInputIsCorrectFormat(String inputNumbers){
+        // 시작 공백, 한글 입력 check
         if(checkInputIsNotStartEmptyOrOnlyNumber(inputNumbers)){
             printErrorMessage();
         }
         else{
             String[] Numbers = inputNumbers.split(",");
+            // 입력 하나인 경우 check
             if(checkInputSizeIsOne(Numbers)){
                 printErrorMessage();
-            } // 입력 하나인 경우 check
+            }
             else{
                 String inputNumber1 = Numbers[0].trim();
                 String inputNumber2 = Numbers[1].trim();
                 Integer changeNumber1 = Integer.parseInt(inputNumber1);
                 Integer changeNumber2 = Integer.parseInt(inputNumber2);
+                // 범위 초과 체크
                 if(checkInputIsInRange(changeNumber1, changeNumber2)){
                     printErrorMessage();
                 }
-                // 범위 초과 체크
+
             }
         }
     }
 
+
     static boolean checkInputIsNotStartEmptyOrOnlyNumber(String inputNumbers){
         return inputNumbers.startsWith(" ") || inputNumbers.matches(".*[^0-9,\\s].*");
-        // 시작 공백, 한글 입력 check
+
     }
 
     static boolean checkInputSizeIsOne(String[] Numbers){

@@ -43,12 +43,14 @@ public class Sokoban {
 
     }
 
+    // "=====" 를 기준으로 Stage 1 Stage 2를 나누는 함수
     static void splitMapStages(String mapInformation){
         mapArray = mapInformation.split("=====");
         saveStageDetails(map1, mapArray[0].trim());
         saveStageDetails(map2, mapArray[1].trim());
     }
 
+    // map 정보가 주어지면 제목과 내용을 분리하는 함수
     static void saveStageDetails(SokobanMap map, String mapInformation) {
         String[] splitMapInformation = mapInformation.split("\n", 2);
         map.stageNumber = splitMapInformation[0];
@@ -62,6 +64,7 @@ public class Sokoban {
         countMapInformation(map, mapRowInformation);
     }
 
+    // map 정보가 주어지면 map의 가로와 세로 길이를 구하는 함수
     static void calculateMapWidthAndHeight(SokobanMap map, String[] mapRowInformation) {
         map.mapHeight = mapRowInformation.length;
         for (String mapRow : mapRowInformation) {
@@ -69,6 +72,7 @@ public class Sokoban {
         }
     }
 
+    // map의 각 구성요소에 대해 대응되는 저장값으로 변환하는 함수
     static Integer saveSokobanMapInformationToNumber(char mapInformation) {
 
         if(mapInformation == ' ') return 0;
@@ -80,7 +84,7 @@ public class Sokoban {
         return null;
     }
 
-    // map의 각 구성요소에 대해 대응되는 저장값으로 변환
+    // map을 돌며 대응되는 저장값이 있을때마다 해당 저장값에 대응하는 변수의 값을 증가시키는 함수
     static void countMapInformation(SokobanMap map, String[] mapRowInformation) {
         for (int i = 0; i < mapRowInformation.length; i++) {
             for (int j = 0; j < mapRowInformation[i].length(); j++) {

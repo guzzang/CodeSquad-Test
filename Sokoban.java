@@ -8,7 +8,7 @@ public class Sokoban {
         int numHall;
         int numBall;
         int[] playerPosition = new int[2];
-        String originalMapStage;
+        String originalMap;
     }
 
 
@@ -17,7 +17,7 @@ public class Sokoban {
     static String[] mapArray;
 
     public static void main(String[] args) {
-        String mapInformation =
+        String map =
                 """
                 Stage 1
                 #####
@@ -33,12 +33,13 @@ public class Sokoban {
                  #   O  #  
                  ########  
                 """;
-        splitMapStages(mapInformation);
+        splitMapStages(map);
         calculateMapInformation(map1);
         calculateMapInformation(map2);
 
-        printMap(map1);
-        printMap(map2);
+        printMapInformation(map1);
+        System.out.println("\n");
+        printMapInformation(map2);
 
     }
 
@@ -51,12 +52,12 @@ public class Sokoban {
     static void saveStageDetails(SokobanMap map, String mapInformation) {
         String[] splitMapInformation = mapInformation.split("\n", 2);
         map.stageNumber = splitMapInformation[0];
-        map.originalMapStage = splitMapInformation[1];
+        map.originalMap = splitMapInformation[1];
 
     }
 
     static void calculateMapInformation(SokobanMap map) {
-        String[] mapRowInformation = map.originalMapStage.split("\n");
+        String[] mapRowInformation = map.originalMap.split("\n");
         calculateMapWidthAndHeight(map, mapRowInformation);
         countMapInformation(map, mapRowInformation);
     }
@@ -98,17 +99,16 @@ public class Sokoban {
         }
     }
 
-    static void printMap(SokobanMap map) {
+    static void printMapInformation(SokobanMap map) {
         System.out.println(map.stageNumber);
         System.out.println("\n");
-        System.out.println(map.originalMapStage);
+        System.out.println(map.originalMap);
         System.out.println("\n");
         System.out.println("가로크기: " + map.mapWidth);
         System.out.println("세로크기: " + map.mapHeight);
         System.out.println("구멍의 수: " + map.numHall);
         System.out.println("공의 수: " + map.numBall);
         System.out.println("플레이어 위치: " + map.playerPosition[0] + "행 " + map.playerPosition[1] + "열");
-        System.out.println("\n");
     }
 
     // map을 순회하며 구성요소의 해당 저장값에 대응하는 SokobanMap class의 변수값 증가

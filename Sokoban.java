@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
 public class Sokoban {
 
     static class SokobanMap{
@@ -15,8 +20,12 @@ public class Sokoban {
     static SokobanMap map1 = new SokobanMap();
     static SokobanMap map2 = new SokobanMap();
     static String[] mapArray;
+    static String[] commandArray;
+    static String[][] mapMatrix;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        // Step 1
         String map =
                 """
                 Stage 1
@@ -41,7 +50,106 @@ public class Sokoban {
         System.out.println("\n");
         printMapInformation(map2);
 
+        // Step 2
+        // player 이동을 구현하기 위해서 map을 2차원 배열에 저장
+        printMap(map2);
+        saveMapMatrix(map2.originalMap);
+
+        System.out.print("SOKOBAN> ");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String command = br.readLine();
+        splitCommand(command);
+        executeCommand(commandArray);
+
     }
+
+    static void saveMapMatrix(String originalMap) {
+        String[] mapRowInformation = originalMap.split("\n");
+
+        // mapMatrix 초기화
+        mapMatrix = new String[mapRowInformation.length][];
+        for (int i = 0; i < mapRowInformation.length; i++) {
+            mapMatrix[i] = new String[mapRowInformation[i].length()]; // 가변 행렬 초기화
+        }
+
+        for(int i = 0 ; i < mapRowInformation.length; i++){
+            for(int j = 0; j < mapRowInformation[i].length(); j++){
+                mapMatrix[i][j] = String.valueOf(mapRowInformation[i].charAt(j));
+            }
+        }
+    }
+
+    static void splitCommand(String command) {
+        commandArray = command.split("");
+    }
+
+    static void executeCommand(String[] commandArray) {
+        List<String> rightCommands = List.of("w", "W", "a", "A", "s", "S", "d", "D", "q", "Q");
+
+        for(String command : commandArray){
+            if(!rightCommands.contains(command)){
+                System.out.println(command.toUpperCase() + ": (경고) 지원하지 않는 명령입니다!");
+            }
+            switch (command){
+                case "w" : case "W":
+                    // p 좌표를 위로 1칸 이동 // 벽이나 공에 충돌시 경고
+                    commandW();
+                    break;
+                case "a" : case "A":
+                    // p 좌표를 왼쪽으로 1칸 이동 // 벽이나 공에 충돌시 경고
+                    commandA();
+                    break;
+                case "s" : case "S":
+                    // p 좌표를 아래로 1칸 이동 // 벽이나 공에 충돌시 경고
+                    commandS();
+                    break;
+                case "d" : case "D":
+                    // p 좌표를 오른쪽으로 1칸 이동 // 벽이나 공에 충돌시 경고
+                    commandD();
+                    break;
+                case "q" : case "Q":
+                    System.out.println("Bye~");
+                    return;
+            }
+        }
+    }
+
+    static void commandW() {
+        map2.playerPosition[0] += 1;
+        if(mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("o")|| mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("O")|| mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("#")){
+            System.out.println("W: (경고!) 해당 명령을 수행할 수 없습니다!");
+            map2.playerPosition[0] -= 1;
+        }
+        else System.out.println("W: 위로 이동합니다.");
+    }
+
+    static void commandA() {
+        map2.playerPosition[1] -= 1;
+        if(mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "o" || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "O" || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "#"){
+            System.out.println("A: (경고!) 해당 명령을 수행할 수 없습니다!");
+            map2.playerPosition[1] += 1;
+        }
+        else System.out.println("A: 왼쪽으로 이동합니다.");
+    }
+
+    static void commandS() {
+        map2.playerPosition[0] -= 1;
+        if(mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "o" || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "O" || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]] == "#"){
+            System.out.println("S: (경고!) 해당 명령을 수행할 수 없습니다!");
+            map2.playerPosition[0] += 1;
+        }
+        else System.out.println("S: 아래로 이동합니다.");
+    }
+
+    static void commandD() {
+        map2.playerPosition[1] += 1;
+        if(mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("o") || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("O") || mapMatrix[map2.playerPosition[0]][map2.playerPosition[1]].equals("#")){
+            System.out.println("D: (경고!) 해당 명령을 수행할 수 없습니다!");
+            map2.playerPosition[1] -= 1;
+        }
+        else System.out.println("D: 오른쪽으로 이동합니다.");
+    }
+
 
     // "=====" 를 기준으로 Stage 1 Stage 2를 나누는 함수
     static void splitMapStages(String mapInformation){
@@ -114,6 +222,17 @@ public class Sokoban {
         System.out.println("공의 수: " + map.numBall);
         System.out.println("플레이어 위치: " + map.playerPosition[0] + "행 " + map.playerPosition[1] + "열");
     }
+
+    static void printMap(SokobanMap map) {
+        System.out.println("\n");
+        System.out.println(map.stageNumber);
+        System.out.println("\n");
+        System.out.println(map.originalMap);
+        System.out.println("\n");
+    }
+
+
+
 
     // map을 순회하며 구성요소의 해당 저장값에 대응하는 SokobanMap class의 변수값 증가
 //    static void saveNumberToSokobanMapInformation(SokobanMap map, String mapInformation){
